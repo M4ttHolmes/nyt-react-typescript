@@ -1,9 +1,13 @@
 import React from "react";
 
-const Display = () => {
+type ApiState = {
+    results: []
+}
 
+
+const Display = (props: ApiState) => {
     
-
+    console.log(props.results);
 
 
 
@@ -11,7 +15,7 @@ const Display = () => {
 
     return (
         <div>
-            <h1>Hello World (From Display.tsx)</h1>
+            <h1>Results:</h1>
         </div>
     )
 }
