@@ -17,7 +17,7 @@ export default class ApiFetch extends Component<{}, ApiState> {
             search: "test",
             startDate: "",
             endDate: "",
-            pageNumber: 0,
+            pageNumber: 1,
             results: []
         }
     }
@@ -29,7 +29,7 @@ export default class ApiFetch extends Component<{}, ApiState> {
         let url = `${baseURL}?api-key=${key}&page=${this.state.pageNumber}&q=${this.state.search}`;
         url = this.state.startDate ? url + `&begin_date=${this.state.startDate}` : url;
         url = this.state.endDate ? url + `&end_date=${this.state.endDate}` : url;
-
+        console.log(url);
         fetch(url)
             .then(res => res.json())
             .then(data => {
@@ -41,12 +41,28 @@ export default class ApiFetch extends Component<{}, ApiState> {
             .catch(err => console.log(err));
     };
 
-    handleSubmit = (e: any) => {   
-        this.setState({ pageNumber: 0 });
+    handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {   
+        this.setState({ pageNumber: 1 });
         e.preventDefault();
         this.fetchResults();
-    }   
+    };
 
+
+    changePageNumber = (e: React.MouseEvent<HTMLButtonElement>, direction: string) => {
+        e.preventDefault()
+        if (direction === "down") {
+            if (this.state.pageNumber > 1) {
+                this.setState({
+                    pageNumber: this.state.pageNumber - 1
+                }, this.fetchResults)
+            }
+        }
+        if (direction === "up") {
+            this.setState({
+                pageNumber: this.state.pageNumber + 1
+            }, this.fetchResults)
+        }
+    }
 
     render() {
         return(
@@ -77,7 +93,7 @@ export default class ApiFetch extends Component<{}, ApiState> {
                     <button className="submit">Submit search</button>
                 </form>
                 {
-                    this.state.results.length > 0 ? <Display results={this.state.results} /> : null
+                    this.state.results.length > 0 ? <Display results={this.state.results} changePage={this.changePageNumber} page={this.state.pageNumber}/> : null
                 }
             </div>
         )
